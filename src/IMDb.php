@@ -15,15 +15,27 @@ final class IMDb {
      * @var string
      */
     private $url;
+
+    /**
+     * @var string
+     */
+    private $query;
     
     /**
      * @var array
      */
     private $result = [];
 
-    public function __construct()
+    /**
+     * @var string
+     */
+    private $cookieFile;
+
+    public function __construct($query)
     {
         echo "works!\n";
+        $query = str_replace(" ", "+", $query);
+        $this->url = "https://www.imdb.com/find?ref_=nv_sr_fn&q={$query}&s=all";
     }
 
     /**
@@ -37,6 +49,11 @@ final class IMDb {
         $options = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $url,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_USERAGENT => "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0",
+            CURLOPT_COOKIEFILE => $this->cookieFile,
+            CURLOPT_COOKIEJAR => $this->cookieFile
         ];
 
         curl_setopt_array($ch, $options);
@@ -58,29 +75,32 @@ final class IMDb {
         }
     }
 
-    public function query($query)
-    {
-        $query = str_replace(" ", "+", $query);
-        $this->url = "https://www.imdb.com/find?ref_=nv_sr_fn&q={$query}&s=all";
-    }
-
+    /**
+     * @method get title
+     * @return array
+     */
     private function title()
     {
-        $result = [];
         $q = $this->curls($this->url);
-
+        $result = [];
         if(!empty($q)) {
-            preg_match_all('!<a href="\/title\/tt(.*?)\/?ref_=(.*?)">(.*?)<\/a>!', $q, $match, PREG_PATTERN_ORDER);
+            preg_match_all('!<a href="\/title\/.*?\/\?ref_=fn_al_tt_.*?">(.*?)<\/a>!', $q, $match, PREG_PATTERN_ORDER);
+            $result = $match[1];
 
-            $result = $match[3];
+            $result = array_map(function($v) {
+                return trim(strip_tags($v));
+            }, $result);
         }
 
         return $result;
     }
 
+    /**
+     * @method executor
+     */
     public function exec()
     {
-        var_dump($this->title());
+        return $this->title();
     }
 
 }
