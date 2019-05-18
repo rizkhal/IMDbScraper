@@ -1,0 +1,6 @@
+/vendor/
+*.lock
+*.tmp
+/test.php
+/IMDb/
+/.phpintel/

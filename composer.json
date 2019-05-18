@@ -1,0 +1,21 @@
+{
+    "name": "lilis/IMDbScrapper",
+    "description": "IMDb scrapper",
+    "require": {
+        "php": "^7.2",
+        "ext-curl": "^7.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "bungnewbie",
+            "email": "lamaaurizkhal@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "IMDb\\": "src"
+        }
+    }
+}
