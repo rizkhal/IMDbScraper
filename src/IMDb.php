@@ -82,15 +82,15 @@ final class IMDb {
     }
 
     /**
-     * @method get title
+     * @param regex $regex
      * @return array
      */
-    private function title()
+    private function clean($regex)
     {
         $q = $this->curls($this->url);
         $result = [];
         if(!empty($q)) {
-            preg_match_all('!<a href="\/title\/.*?\/\?ref_=fn_al_tt_.*?">(.*?)<\/a>!', $q, $match, PREG_PATTERN_ORDER);
+            preg_match_all('!'.$regex.'!', $q, $match, PREG_PATTERN_ORDER);
             $result = $match[1];
 
             $result = array_map(function($v) {
@@ -102,19 +102,25 @@ final class IMDb {
     }
 
     /**
+     * @method get title
+     * @return array
+     */
+    private function title()
+    {
+        $title = $this->clean('<a href="\/title\/.*?\/\?ref_=fn_al_tt_.*?">(.*?)<\/a>');
+
+        return $title;
+    }
+
+    /**
      * @method get cover
      * @return array
      */
     private function cover()
     {
-        $q = $this->curls($this->url);
-        $result = [];
-        if(!empty($q)) {
-            preg_match_all('!<a href="\/title\/.*?\/?ref_=.*?" ><img src="(.*?)" \/><\/a>!', $q, $matches);
-            $result = $matches[1];
-        }
+        $cover = $this->clean('<a href="\/title\/.*?\/?ref_=.*?" ><img src="(.*?)" \/><\/a>');
 
-        return $result;
+        return $cover;
     }
 
     /**

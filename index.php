@@ -10,7 +10,8 @@ use IMDb\IMDb;
  * @version 0.0.1
  */
 
-$imdb = new IMDb("mr robot");
+$query  = "dilan";
+$imdb   = new IMDb($query);
 $result = $imdb->exec();
 
 if(is_array(@count($result)) === 0) {
