@@ -4,6 +4,12 @@ namespace IMDb;
 
 use Exception;
 
+/**
+ * @author Muhammad Rizkhal Lamaau <lamaaurizkhal@gmail.com>
+ * @license MIT
+ * @version 0.0.1
+ */
+
 final class IMDb {
 
     /**
@@ -96,11 +102,30 @@ final class IMDb {
     }
 
     /**
+     * @method get cover
+     * @return array
+     */
+    private function cover()
+    {
+        $q = $this->curls($this->url);
+        $result = [];
+        if(!empty($q)) {
+            preg_match_all('!<a href="\/title\/.*?\/?ref_=.*?" ><img src="(.*?)" \/><\/a>!', $q, $matches);
+            $result = $matches[1];
+        }
+
+        return $result;
+    }
+
+    /**
      * @method executor
+     * @return array
      */
     public function exec()
     {
-        return $this->title();
+        $this->result['title'] = $this->title();
+        $this->result['cover'] = $this->cover();
+        return $this->result;
     }
 
 }
